@@ -1,18 +1,57 @@
-## Getting Started
+## Evaluacion 
+**Nombre:** Martin Amaya
+**Fecha:** 30/06/2026
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+**Metodo 1:**
+Para este metodo se utilizo un TreeSet porque resuelve lo siguiente: evita que se guarden personas repetidas y mantiene los elementos ordenados automaticamente a medida que se van agregando.
 
-## Folder Structure
+```
+public Set<Persona> filtrarYOrdenar(List<Persona> personas, int edad){
+        Set<Persona> personasFiltradas = new TreeSet<>(
+            (p1, p2)-> {
+            int compEdad = Integer.compare(p2.getEdad(), p1.getEdad());
+            if(compEdad != 0){
+                return compEdad;
+            }
+            return p1.getNombre().compareToIgnoreCase(p2.getNombre());
+        });
 
-The workspace contains two folders by default, where:
+        for(Persona persona : personas){
+            if(persona.getEdad() >= edad){
+                personasFiltradas.add(persona);
+            }
+        }
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
+         return personasFiltradas;
+    }
 
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
+```
 
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
+**Metodo 2:**
 
-## Dependency Management
+Para implementar el mapa se uso un TreeMap, ya que me garantizaba que las claves se ordenaran alfabeticamente de forma automatica, y para los valores asociados a esas claves, se uso un LinkedHashSet porque permite resolver: guardar nombres unicos (sin duplicados) y respetar el orden exacto en el que fueron ingresados originalmente en cada categoria.
+```
+public Map<String, Set<String>> agruparPorRangoEdad(List<Persona> personas){
+        Map<String, Set<String>> personasAgrupadas = new TreeMap<>();
+        
+        personasAgrupadas.put("JOVEN", new LinkedHashSet<String>());
+        personasAgrupadas.put("ADULTO", new LinkedHashSet<String>());
+        personasAgrupadas.put("MAYOR", new LinkedHashSet<String>());
+        
+        for(Persona persona : personas){
+            int edad = persona.getEdad();
+            String primerNombre = persona.getNombre().split(" ")[0]; 
+            
+            if (edad < 18) {
+                personasAgrupadas.get("JOVEN").add(primerNombre);
+            } else if (edad < 65) {
+                personasAgrupadas.get("ADULTO").add(primerNombre);
+            } else {
+                personasAgrupadas.get("MAYOR").add(primerNombre);
+            }
+        }
+        
+        return personasAgrupadas;
+    }
 
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+```
